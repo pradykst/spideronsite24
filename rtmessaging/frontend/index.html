@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Messaging Page</title>
+</head>
+
+<body>
+    <h1>Welcome to the Messaging Page</h1>
+
+    <div id="message-container">
+        <!-- Messages will be displayed here -->
+    </div>
+
+    <form id="message-form">
+        <input type="text" id="message-input" placeholder="Type your message...">
+        <button type="submit">Send</button>
+    </form>
+
+    <script>
+        const ws = new WebSocket('ws://localhost:8080');
+
+        ws.onopen = () => {
+            ws.send(JSON.stringify({ type: 'register', userId: 'user1' }));
+        };
+
+        ws.onmessage = (event) => {
+            const message = JSON.parse(event.data);
+            if (message.type === 'message') {
+                console.log('New message:', message.content);
+            }
+        };
+
+        function sendMessage(content, recipientId) {
+            const message = {
+                type: 'message',
+                content: { text: content, recipientId },
+            };
+            ws.send(JSON.stringify(message));
+        }
+
+        function sendGroupMessage(content, groupId) {
+            const message = {
+                type: 'message',
+                content: { text: content },
+                groupId,
+            };
+            ws.send(JSON.stringify(message));
+        }        
+    </script>
+</body>
+
+</html>

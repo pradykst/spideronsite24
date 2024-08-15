@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merkle Proof Generator</title>
+    <script src="https://cdn.jsdelivr.net/npm/merkletreejs@latest/merkletree.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.0.0/crypto-js.min.js"></script>
+</head>
+<body>
+    <h1>Merkle Proof Generator</h1>
+    <form id="merkleForm">
+        <label for="voterAddresses">Enter Voter Addresses (comma-separated):</label><br>
+        <textarea id="voterAddresses" rows="4" cols="50"></textarea><br><br>
+        <label for="voterAddress">Enter Voter Address to Generate Proof:</label><br>
+        <input type="text" id="voterAddress"><br><br>
+        <button type="button" onclick="generateMerkleProof()">Generate Merkle Proof</button>
+    </form>
+    <h2>Merkle Proof</h2>
+    <pre id="merkleProof"></pre>
+
+    <script>
+        function generateMerkleProof() {
+            const addresses = document.getElementById('voterAddresses').value.split(',').map(addr => addr.trim());
+            const voterAddress = document.getElementById('voterAddress').value.trim();
+
+            if (!addresses.includes(voterAddress)) {
+                alert('Voter address not found in the list of addresses.');
+                return;
+            }
+
+            const leaves = addresses.map(addr => CryptoJS.SHA256(addr));
+            const tree = new MerkleTree(leaves, CryptoJS.SHA256);
+            const leaf = CryptoJS.SHA256(voterAddress);
+            const proof = tree.getProof(leaf).map(x => x.data.toString('hex'));
+
+            document.getElementById('merkleProof').textContent = JSON.stringify(proof, null, 2);
+        }
+    </script>
+</body>
+</html>

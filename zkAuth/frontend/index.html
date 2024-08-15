@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZKP Registration</title>
+</head>
+<body>
+  <h1>ZKP Registration</h1>
+  
+  <!-- Registration Form -->
+  <h2>Register</h2>
+  <form id="register-form">
+    <label for="reg-username">Username:</label>
+    <input type="text" id="reg-username" name="reg-username" required><br><br>
+    <label for="reg-password">Password:</label>
+    <input type="password" id="reg-password" name="reg-password" required><br><br>
+    <label for="confirm-password">Confirm Password:</label>
+    <input type="password" id="confirm-password" name="confirm-password" required><br><br>
+    <button type="submit">Register</button>
+    <button id="redirect">Verify</button>
+  </form>
+
+  <script>
+    // Registration Form Submission
+    document.getElementById('register-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      
+      const username = document.getElementById('reg-username').value;
+      const password = document.getElementById('reg-password').value;
+      const confirmPassword = document.getElementById('confirm-password').value;
+
+      if (password !== confirmPassword) {
+        alert('Passwords do not match!');
+        return;
+      }
+
+      // Registration logic here
+      const response = await fetch('http://localhost:3000/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password })
+      });
+
+      if (response.ok) {
+        alert('Registration successful!');
+      } else {
+        alert('Registration failed!');
+      }
+    });
+    document.getElementById("redirect").onclick = function () {
+        location.href = "http://127.0.0.1:5500/frontend/verify.html";
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>IPFS File Upload</title>
+</head>
+<body>
+    <input type="file" id="fileInput">
+    <button onclick="uploadFile()">Upload</button>
+    <div id="output"></div>
+
+    <script>
+        async function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const response = await fetch('http://localhost:5001/api/v0/add', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+            document.getElementById('output').innerHTML = `
+                CID: ${data.Hash} <br>
+                <a href="https://ipfs.io/ipfs/${data.Hash}" target="_blank">View File</a>
+            `;
+        }
+    </script>
+</body>
+</html>
